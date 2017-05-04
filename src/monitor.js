@@ -2,6 +2,7 @@
  * Created by im on 4/24/17.
  */
 'use strict';
+const minute = 6e4;
 
 const Monitor = function () {
 
@@ -10,8 +11,8 @@ const Monitor = function () {
     this.aliases = [];
 
     this.monitorConfig = {
-        defaultInterval: 6e5,
-        alertedInterval: 6e5 / 2,
+        defaultInterval: minute * 60,
+        alertedInterval: minute / 2,
         timeFormat: "DD_MM HH:mm"
     };
 
