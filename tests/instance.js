@@ -149,7 +149,7 @@ describe("Instance", () => {
                     assert.equal(instance.isDown(), true);
                     assert.equal(instance.lastStatus, false);
                     resolve();
-                }, 300);
+                }, 400);
             })
         });
 

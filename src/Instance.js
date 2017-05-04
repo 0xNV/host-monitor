@@ -59,7 +59,7 @@ const restartJob = function (jobFn, interval) {
         throw Error("Invalid interval");
     }
 
-    logger.log(`Started job for ${this.host} with interval ${interval}`);
+    logger.log(`Started job for ${this.host} with interval ${interval/1000} sec`);
     this.job.restart(jobFn, interval);
 };
 

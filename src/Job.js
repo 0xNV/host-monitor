@@ -3,7 +3,7 @@
  */
 'use strict';
 
-const runner = function () {
+const runner = function (first) {
     this.timeoutId = setTimeout(() => {
         isFunction(this.mainFn) && this.mainFn();
 
@@ -28,7 +28,7 @@ const runner = function () {
         }
         runner.call(this);
 
-    }, this.mainInterval || 10);
+    }, first ? 10 : (this.mainInterval || 10));
 };
 
 const isFunction = function (val) {
@@ -85,7 +85,7 @@ Job.prototype = {
         this.mainInterval = interval;
 
         this.status = true;
-        runner.call(this);
+        runner.call(this, true);
 
         return this;
     },
