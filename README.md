@@ -1,4 +1,8 @@
 # host-monitor
+
+[![Build Status](https://travis-ci.org/toxity/host-monitor.svg?branch=master)](https://travis-ci.org/toxity/host-monitor)
+[![npm version](https://badge.fury.io/js/host-monitor.svg)](https://travis-ci.org/toxity/host-monitor)
+
 > node.js tool for host status monitoring
 
 ## Install
