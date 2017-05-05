@@ -33,32 +33,37 @@ $ npm install host-monitor
 
     monitor.register("127.0.0.1:8080", onUp, onDown);
 ```
----------------------
+--------
 
 ### Config
 You can override monitor's default config.
 
 To check current available options use:
-```
+```javascript
     monitor.config();
 ```
 To override option use:
-```
+```javascript
     monitor.config({
         defaultInterval: 5000
     })
 ```
+
 It will force monitor to check host availability each 5 seconds
+
+--------
 
 ### Remove
 You can remove host from minitor by:
-```
+```javascript
     monitor.remove(hostName);
 ```
 
+--------
+
 ### Get
 If you need some extra manipulation with working monitor you get Instance by:
-```
+```javascript
     monitor.get(hostName);
 ```
 
