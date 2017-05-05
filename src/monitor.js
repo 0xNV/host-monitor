@@ -159,7 +159,7 @@ const logger = (() => {
         return manager.createDummyLogger("monitor");
     }
 
-    if (Boolean(process.env.CONSOLE)) {
+    if (Boolean(process.env.DEBUG)) {
         return manager.createConsoleLogger("monitor");
     }
 

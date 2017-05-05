@@ -54,7 +54,7 @@ It will force monitor to check host availability each 5 seconds
 --------
 
 ### Remove
-You can remove host from minitor by:
+You can remove host from monitor by:
 ```javascript
     monitor.remove(hostName);
 ```
