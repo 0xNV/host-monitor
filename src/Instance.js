@@ -27,17 +27,17 @@ const logger = (() => {
 const checker = function () {
     require("is-reachable")(this.host).then(reachable => {
         logger.info(`${moment().format('DD/MMM_HH:mm')} | ${reachable ? " UP " : "DOWN"} | ${this.host} `);
-
+        const firstCheck = this.lastStatus === null;
         const wasUp = this.lastStatus === true;
 
         if (reachable) {
-            if (!wasUp) {
+            if (!wasUp && !firstCheck) {
                 this.lastStatus = true;
                 this.downFrom = null;
                 this.onUp.call(this);
             }
         } else {
-            if (this.lastStatus === null || wasUp) {
+            if (firstCheck || wasUp) {
                 this.downFrom = moment();
                 this.onDown.call(this);
 
