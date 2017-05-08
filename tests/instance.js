@@ -81,12 +81,12 @@ describe("Instance", () => {
             instance.runDefaultJob();
 
             return new Promise((resolve) => {
-                setTimeout(() => {
-                    assert.equal(status, 1);
+                return setTimeout(() => {
+                    assert.equal(status, 0);
                     assert.equal(instance.job.status, true);
                     assert.equal(instance.lastStatus, true);
                     resolve();
-                }, 400);
+                }, 1000);
             })
         });
 
@@ -100,7 +100,7 @@ describe("Instance", () => {
                     assert.equal(instance.job.status, true);
                     assert.equal(instance.lastStatus, false);
                     resolve();
-                }, 100);
+                }, 400);
             })
         });
 
@@ -122,7 +122,7 @@ describe("Instance", () => {
             })
         });
 
-        it("should call upFunc if host is up", () => {
+        it("shouldn't call upFunc if host is up", () => {
             app.use("*", (req, res) => {
                 res.sendStatus(200)
             });
@@ -131,7 +131,7 @@ describe("Instance", () => {
 
             return new Promise((resolve) => {
                 setTimeout(() => {
-                    assert.equal(status, 1);
+                    assert.equal(status, 0);
                     assert.equal(instance.job.status, true);
                     assert.equal(instance.lastStatus, true);
                     resolve();
@@ -150,6 +150,20 @@ describe("Instance", () => {
                     assert.equal(instance.lastStatus, false);
                     resolve();
                 }, 400);
+            })
+        });
+
+        it("shouldn't call downFunc on first check", () => {
+            instance.runDefaultJob();
+
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    assert.equal(status, -1);
+                    assert.equal(instance.job.status, true);
+                    assert.equal(instance.isDown(), true);
+                    assert.equal(instance.lastStatus, false);
+                    resolve();
+                }, 110);
             })
         });
 
@@ -199,7 +213,7 @@ describe("Instance", () => {
 
             return new Promise((resolve) => {
                 setTimeout(() => {
-                    assert.equal(status == 1, true);
+                    assert.equal(instance.job.status, true);
 
                     instance.stopJob();
 
