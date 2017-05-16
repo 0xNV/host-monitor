@@ -187,7 +187,7 @@ describe("Instance", () => {
 
             return new Promise((resolve) => {
                 setTimeout(() => {
-                    assert.equal(instance.getDownDate(), undefined);
+                    assert.equal(instance.getDownDate(), "Never");
                     resolve();
                 }, 400);
             })

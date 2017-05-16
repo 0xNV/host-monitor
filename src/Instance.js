@@ -37,8 +37,10 @@ const checker = function () {
                 this.onUp.call(this);
             }
         } else {
-            if (firstCheck || wasUp) {
+            if (wasUp) {
                 this.downFrom = moment();
+            }
+            if (firstCheck) {
                 this.onDown.call(this);
 
                 if (this.lastStatus !== null) {
@@ -80,7 +82,7 @@ function Instance (host, onUp, onDown, alias) {
     this.alias = alias ? alias : null;
 
     this.lastStatus = null;
-    this.downFrom = null;
+    this.downFrom = "Never";
 
     this.job = new Job();
 }
@@ -100,16 +102,19 @@ Instance.prototype = {
                 return counter++ > 120;
             })
             .onEnd(() => {
-                this.runDefaultJob()
-            })
+                this.runDefaultJob();
+            });
     },
 
     isDown: function () {
-        return !!this.downFrom;
+        return this.downFrom === "Never" || !!this.downFrom;
     },
 
     getDownDate: function () {
         if (this.isDown()) {
+            if (typeof this.downFrom === "string") {
+                return this.downFrom;
+            }
             return this.downFrom.format(config.timeFormat);
         }
     },
@@ -135,15 +140,19 @@ Instance.prototype = {
             if (detailed && this.getLastCheckDate()) {
                 message += ` | Last check on: ${this.getLastCheckDate()}`;
             }
-            return message
+            return message;
         }
     },
 
-    getUpStatus: function () {
+    getUpStatus: function (advanced) {
         if (this.lastStatus === null) {
             return "Checking";
         }
-        return this.isDown() ? `DOWN | Was up on ${this.getDownDate()}` : "UP";
+        if (!advanced) {
+            return this.isDown() ? "DOWN" : "UP";
+        }
+
+        return this.isDown() ? `DOWN | Was up - ${this.getDownDate()}` : "UP";
     },
 
     resumeJob: function () {
