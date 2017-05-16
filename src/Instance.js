@@ -40,7 +40,7 @@ const checker = function () {
             if (wasUp) {
                 this.downFrom = moment();
             }
-            if (firstCheck) {
+            if (firstCheck || wasUp) {
                 this.onDown.call(this);
 
                 if (this.lastStatus !== null) {
