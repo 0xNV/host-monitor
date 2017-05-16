@@ -11,7 +11,7 @@ $ npm install host-monitor
 ```
 
 ## Usage
-> By default monitor will check host availability each 1 hour
+> By default monitor will check host availability each 30 mins
 
 ### Register host
 > monitor will start to check host constantly right after registration

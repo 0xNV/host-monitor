@@ -11,7 +11,7 @@ const Monitor = function () {
     this.aliases = [];
 
     this.monitorConfig = {
-        defaultInterval: minute * 60,
+        defaultInterval: minute * 30,
         alertedInterval: minute / 2,
         timeFormat: "DD_MM HH:mm"
     };
