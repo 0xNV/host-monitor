@@ -107,7 +107,7 @@ Instance.prototype = {
     },
 
     isDown: function () {
-        return this.downFrom === null ? true : !!this.downFrom;
+        return this.lastStatus === false;
     },
 
     getDownDate: function () {
