@@ -1,6 +1,6 @@
 {
   "name": "host-monitor",
-  "version": "0.9.9",
+  "version": "0.9.10-0",
   "description": "node.js tool for host status monitoring",
   "main": "index.js",
   "engines": {
