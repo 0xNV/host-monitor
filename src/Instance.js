@@ -82,7 +82,7 @@ function Instance (host, onUp, onDown, alias) {
     this.alias = alias ? alias : null;
 
     this.lastStatus = null;
-    this.downFrom = "Never";
+    this.downFrom = null;
 
     this.job = new Job();
 }
@@ -107,13 +107,13 @@ Instance.prototype = {
     },
 
     isDown: function () {
-        return this.downFrom === "Never" || !!this.downFrom;
+        return this.downFrom === null ? true : !!this.downFrom;
     },
 
     getDownDate: function () {
         if (this.isDown()) {
-            if (typeof this.downFrom === "string") {
-                return this.downFrom;
+            if (this.downFrom === null) {
+                return "Never";
             }
             return this.downFrom.format(config.timeFormat);
         }
