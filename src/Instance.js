@@ -22,7 +22,7 @@ const logger = (() => {
     }
     return manager.createFileLogger("instance", {
         fileNamePattern: "instance-<DATE>.log",
-        dir: require('path').join(__dirname, "..", "logs")
+        dir: process.env.LOG_DIR || require('path').join(__dirname, "..", "logs")
     })
 })();
 
