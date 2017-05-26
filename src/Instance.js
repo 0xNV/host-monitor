@@ -7,6 +7,8 @@ const moment = require("moment");
 
 const config = require('./monitor').config();
 
+const Job = require("./Job");
+
 const logger = (() => {
     const manager = require('simple-log-manager');
 
@@ -25,8 +27,8 @@ const logger = (() => {
 })();
 
 const checker = function () {
-    require("is-reachable")(this.host).then(reachable => {
-        logger.info(`${moment().format('DD/MMM_HH:mm')} | ${reachable ? " UP " : "DOWN"} | ${this.host} `);
+    require("is-reachable")(this.url).then(reachable => {
+        logger.info(`${moment().format('DD/MMM_HH:mm')} | ${reachable ? " UP " : "DOWN"} | ${this.url} `);
         const firstCheck = this.lastStatus === null;
         const wasUp = this.lastStatus === true;
 
@@ -65,34 +67,41 @@ const restartJob = function (jobFn, interval) {
     this.job.restart(jobFn, interval);
 };
 
-function Instance (host, onUp, onDown, alias) {
-    if (!host || typeof host !== 'string') {
-        throw Error ("Host is invalid or not specified");
+const clearUrl =  function  (url) {
+    if (url.match(/^<http(.*)\|.*>/)) {
+        return url.match(/[^\/>\|]+(?=>$)/i)[0]
     }
-    if (!onUp || !onDown) {
-        throw Error ("onUp and onDown callbacks should be specified!");
+
+    return url.match(/(?:\:\/{2})?([^:\/]+(:\d+)?)(?=\/|$)/i)[1]
+};
+
+class Instance {
+    constructor (url, onUp, onDown, alias) {
+        if (!url || typeof url !== 'string') {
+            throw Error ("Host is invalid or not specified");
+        }
+        if (!onUp || !onDown) {
+            throw Error ("onUp and onDown callbacks should be specified!");
+        }
+
+        this.onUp = onUp;
+        this.onDown = onDown;
+
+        this.url = url;
+        this.host = clearUrl(url);
+        this.alias = alias ? alias : null;
+
+        this.lastStatus = null;
+        this.downFrom = null;
+
+        this.job = new Job();
     }
-    const Job = require("./Job");
 
-    this.onUp = onUp;
-    this.onDown = onDown;
-
-    this.host = host;
-    this.url = host.match(/^http/) ? host : "http://"+host;
-    this.alias = alias ? alias : null;
-
-    this.lastStatus = null;
-    this.downFrom = null;
-
-    this.job = new Job();
-}
-
-Instance.prototype = {
-    runDefaultJob: function () {
+    runDefaultJob () {
         restartJob.apply(this, [checker.bind(this), config.defaultInterval]);
-    },
+    }
 
-    runAlertedJob: function () {
+    runAlertedJob () {
         let counter = 0;
 
         restartJob.apply(this, [checker.bind(this), config.alertedInterval]);
@@ -104,28 +113,28 @@ Instance.prototype = {
             .onEnd(() => {
                 this.runDefaultJob();
             });
-    },
+    }
 
-    isDown: function () {
+    isDown () {
         return this.lastStatus === false;
-    },
+    }
 
-    getDownDate: function () {
+    getDownDate () {
         if (this.isDown()) {
             if (this.downFrom === null) {
                 return "Never";
             }
             return this.downFrom.format(config.timeFormat);
         }
-    },
+    }
 
-    getLastCheckDate: function () {
+    getLastCheckDate () {
         if (this.job.lastCheck) {
             return moment(this.job.lastCheck).format(config.timeFormat);
         }
-    },
+    }
 
-    getJobStatus: function (detailed) {
+    getJobStatus (detailed) {
         const status = this.job ? this.job.status : null;
 
         if (typeof status === 'string') {
@@ -142,9 +151,9 @@ Instance.prototype = {
             }
             return message;
         }
-    },
+    }
 
-    getUpStatus: function (advanced) {
+    getUpStatus (advanced) {
         if (this.lastStatus === null) {
             return "Checking";
         }
@@ -153,16 +162,15 @@ Instance.prototype = {
         }
 
         return this.isDown() ? `DOWN | Was up - ${this.getDownDate()}` : "UP";
-    },
+    }
 
-    resumeJob: function () {
+    resumeJob () {
         this.job.resume();
-    },
+    }
 
-    stopJob: function () {
+    stopJob () {
         this.job.stop();
     }
-};
-
+}
 
 module.exports = Instance;

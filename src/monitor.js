@@ -33,19 +33,17 @@ const Monitor = function () {
         }
     };
 
-    this.register = function (name, onUp, onDown) {
-        const host = this._clearUrl(name);
-
-        if (!this._isHost(host)) {
-            throw Error ("Invalid url - "+host);
+    this.register = function (url, onUp, onDown) {
+        if (!this._isUrl(url)) {
+            throw Error ("Invalid url - "+url);
         }
 
-        if (this._isFree(host)) {
+        if (this._isFree(url)) {
             const Instance = require('./Instance');
-            const instance = new Instance(host, onUp, onDown, this._getAlias(name));
+            const instance = new Instance(url, onUp, onDown, this._getAlias(url));
 
             this.instances.push(instance);
-            logger.log("Added new instance", host);
+            logger.log("Added new instance", url);
 
             instance.runDefaultJob();
             return instance;
@@ -74,8 +72,6 @@ const Monitor = function () {
                 throw Error ("callback should be specified!");
             }
 
-            name = this._clearUrl(name);
-
             const instance = this.getInstanceByName(name);
 
             if (!instance) {
@@ -88,7 +84,7 @@ const Monitor = function () {
 
     this.getInstanceByName = function (name) {
         for (const instance of this.instances) {
-            if (instance.alias === name || instance.host === name) {
+            if (instance.alias === name || instance.url === name) {
                 return instance;
             }
         }
@@ -134,20 +130,7 @@ const Monitor = function () {
         return true;
     };
 
-    this._clearUrl = function (url) {
-        if (url && url.match(/http/)) {
-            if (url.match(/^<http/)) {
-                if (url.match(/^<http(.*)\|.*>/)) {
-                    url = url.split(/<|\||>/)[2];
-                } else {
-                    url = url.replace(/<|>/g, '');
-                }
-            }
-        }
-        return url.replace(/(^\w+:|^)\/\//g, '')
-    };
-
-    this._isHost = function (host) {
+    this._isUrl = function (host) {
         return /^([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/.test(host);
     }
 };

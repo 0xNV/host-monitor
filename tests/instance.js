@@ -27,13 +27,47 @@ describe("Instance", () => {
              });
          });
 
+        it("should parse specified url", () => {
+            const items = [
+                {
+                    url: "example.org",
+                    host: "example.org"
+                },
+                {
+                    url: "example.org/test",
+                    host: "example.org"
+                },
+                {
+                    url: "https://example.org/test",
+                    host: "example.org"
+                },
+                {
+                    url: "http://example.org/test",
+                    host: "example.org"
+                },
+                {
+                    url: "example.org/test",
+                    host: "example.org"
+                },
+            ];
+
+            for (const item of items) {
+                const instance = new Instance(item.url, ()=>{}, ()=>{});
+
+                assert.equal(instance.url, item.url);
+                assert.equal(instance.host, item.host);
+            }
+        });
+
+
         it("should create new instance", () => {
             const instance = new Instance("host", ()=>{}, ()=>{});
 
             assert.equal(instance.host, "host");
             assert.equal(instance.alias, null);
             assert.equal(instance.job.status, false);
-        })
+        });
+
     });
     describe("methods", () => {
         let instance, app, server, status = 0;

@@ -120,14 +120,14 @@ describe("monitor", () => {
     });
 
     describe("getAndCall", () => {
-        const host = "localhost";
+        const url = "example.com";
 
         beforeEach(() => {
-            monitor.register(host, ()=>{}, ()=>{});
+            monitor.register(url, ()=>{}, ()=>{});
         });
 
         afterEach(() => {
-            monitor.remove(host);
+            monitor.remove(url);
         });
 
         it("should throw in invalid input", () => {
@@ -136,11 +136,11 @@ describe("monitor", () => {
             });
 
             assert.throws(() => {
-                monitor.getAndCall(host);
+                monitor.getAndCall(url);
             });
 
             assert.throws(() => {
-                monitor.getAndCall(host, true); //second should be func
+                monitor.getAndCall(url, true); //second should be func
             });
         });
 
@@ -152,13 +152,13 @@ describe("monitor", () => {
         it("should run callback to instance", ()=>{
             let instance;
 
-            const result = monitor.getAndCall(host, (inst)=>{
+            const result = monitor.getAndCall(url, (inst)=>{
                 instance = inst;
             });
 
             assert.equal(result, true);
             assert.notEqual(instance, undefined);
-            assert.equal(instance.host, host);
+            assert.equal(instance.url, url);
         });
     });
 
