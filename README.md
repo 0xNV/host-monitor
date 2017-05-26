@@ -27,7 +27,7 @@ $ npm install host-monitor
     var onUp = function () {
         console.log("Host is UP");
     };
-    var onDonw = function () {
+    var onDown = function () {
         console.log("Host is DOWN");
     }
 
