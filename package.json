@@ -35,6 +35,6 @@
   "dependencies": {
     "is-reachable": "^2.3.2",
     "moment": "^2.18.1",
-    "simple-log-manager": "^0.3.0"
+    "simple-log-manager": "*"
   }
 }
