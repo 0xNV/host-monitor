@@ -151,8 +151,35 @@ describe("Instance", () => {
             return new Promise((resolve) => {
                 setTimeout(() => {
                     assert.equal(endFlag, true);
+
+                    app.use("*", (req, res) => {
+                        res.sendStatus(200)
+                    });
                     resolve();
                 }, 1500);
+            })
+        });
+
+        it("alerted job will become default if instance is up", () => {
+
+            instance.runAlertedJob();
+
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    assert.equal(instance.job.status, true);
+                    assert.equal(instance.lastStatus, false);
+
+                    app.use("*", (req, res) => {
+                        res.sendStatus(200)
+                    });
+
+                    setTimeout(() => {
+                        assert.equal(instance.job.status, true);
+                        assert.equal(instance.lastStatus, true);
+                        assert.equal(instance.job.mainInterval, 100);
+                        resolve();
+                    }, 500);
+                }, 400);
             })
         });
 

@@ -37,6 +37,7 @@ const checker = function () {
                 this.lastStatus = true;
                 this.downFrom = null;
                 this.onUp.call(this);
+                this.runDefaultJob();
             }
         } else {
             if (wasUp) {
