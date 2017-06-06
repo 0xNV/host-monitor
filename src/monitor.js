@@ -13,6 +13,7 @@ const Monitor = function () {
     this.monitorConfig = {
         defaultInterval: minute * 30,
         alertedInterval: minute / 2,
+        alertedCheckCount: 120,
         timeFormat: "DD_MM HH:mm"
     };
 
