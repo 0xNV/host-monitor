@@ -13,6 +13,9 @@ const runner = function (first) {
             isFunction(this.onEndFn) && this.onEndFn();
             this.stop();
             this.status = "Ended";
+
+            isFunction(this.afterEndFn) && this.afterEndFn();
+
             return;
         }
 
@@ -27,7 +30,6 @@ const runner = function (first) {
             return;
         }
         runner.call(this);
-
     }, first ? 10 : (this.mainInterval || 10));
 };
 
@@ -58,6 +60,7 @@ Job.prototype = {
         this.mainFn = null;
         this.runUntilFn = null;
         this.onEndFn = null;
+        this.afterEndFn = null;
         this.pauseWhenFn = null;
 
         return this;
@@ -93,7 +96,7 @@ Job.prototype = {
      * resume stopped runner
      */
     resume: function () {
-        if (this.status == "Stopped") {
+        if (this.status === "Stopped") {
             this.status = true;
             runner.call(this);
         }
@@ -155,12 +158,21 @@ Job.prototype = {
     /**
      * call the handler after runner stopped
      */
-    onEnd: function(callback) {
-        if (!isFunction(callback)) {
-            return console.log("Invalid onEnd function");
+    onEnd: function(endCallback, afterEndCallback) {
+        if (endCallback) {
+            if (!isFunction(endCallback)) {
+                return console.log("Invalid onEnd function");
+            }
+            this.onEndFn = endCallback;
         }
 
-        this.onEndFn = callback;
+        if (afterEndCallback) {
+            if (!isFunction(afterEndCallback)) {
+                return console.log("Invalid onEnd function");
+            }
+            this.afterEndFn = afterEndCallback;
+        }
+
         return this;
     }
 

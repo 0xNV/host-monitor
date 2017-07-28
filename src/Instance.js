@@ -111,7 +111,7 @@ class Instance {
             .runUntil(() => {
                 return counter++ > config.alertedCheckCount;
             })
-            .onEnd(() => {
+            .onEnd(null, () => {
                 this.runDefaultJob();
             });
     }

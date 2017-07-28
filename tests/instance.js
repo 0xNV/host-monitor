@@ -144,7 +144,7 @@ describe("Instance", () => {
             instance.runAlertedJob();
 
             //overriding default onEnd function to check that it is calling
-            instance.job.onEnd(() => {
+            instance.job.onEnd(null, () => {
                 endFlag = true;
             });
 

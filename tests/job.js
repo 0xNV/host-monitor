@@ -152,7 +152,7 @@ describe("Job", () => {
             assert.equal(job.pauseWhen(()=>{}), undefined);
             assert.equal(job.whenPaused(), undefined);
             assert.equal(job.runUntil(), undefined);
-            assert.equal(job.onEnd(), undefined);
+            assert.equal(job.onEnd("testString", "testString"), undefined);
 
             return new Promise((resolve) => {
                 setTimeout(() => {
@@ -170,7 +170,7 @@ describe("Job", () => {
             }, 100);
 
             job.pauseWhen(() => {
-                return callCounter == 5;
+                return callCounter === 5;
             }, 500);
 
             return new Promise((resolve) => {
@@ -189,7 +189,7 @@ describe("Job", () => {
             }, 100);
 
             job.pauseWhen(() => {
-                return callCounter == 5;
+                return callCounter === 5;
             }, 500);
 
             job.whenPaused(() => {
@@ -212,7 +212,7 @@ describe("Job", () => {
             }, 100);
 
             job.runUntil(() => {
-                return callCounter == 5;
+                return callCounter === 5;
             });
 
             return new Promise((resolve) => {
@@ -225,24 +225,27 @@ describe("Job", () => {
         });
 
         it("onEnd should work", () => {
-            let callCounter = 1, endFlag;
+            let callCounter = 1, endFlag, afterEndFlag;
 
             job.start(() => {
                 callCounter++;
             }, 100);
 
             job.runUntil(() => {
-                return callCounter == 5;
+                return callCounter === 5;
             });
 
             job.onEnd(() => {
                 endFlag = true;
+            },() => {
+                afterEndFlag = true;
             });
 
             return new Promise((resolve) => {
                 setTimeout(() => {
                     assert.equal(callCounter === 5, true);
                     assert.equal(endFlag, true);
+                    assert.equal(afterEndFlag, true);
                     assert.equal(job.status, "Ended");
                     resolve();
                 }, 1100);
@@ -254,9 +257,9 @@ describe("Job", () => {
 
             job
                 .start(() => callCounter++, 100)
-                .pauseWhen(() => callCounter == 3, 500)
+                .pauseWhen(() => callCounter === 3, 500)
                 .whenPaused(() => pauseFlag = true)
-                .runUntil(() => callCounter == 10)
+                .runUntil(() => callCounter === 10)
                 .onEnd(() => endFlag = true);
 
             return new Promise((resolve) => {
