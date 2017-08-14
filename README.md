@@ -62,7 +62,7 @@ You can remove host from monitor by:
 --------
 
 ### Get
-If you need some extra manipulation with working monitor you get Instance by:
+If you need some extra manipulations with monitor object you can get Instance by:
 ```javascript
     monitor.get(hostName);
 ```
