@@ -34,7 +34,7 @@
     "linux"
   ],
   "dependencies": {
-    "is-reachable": "^2.3.2",
+    "is-reachable": "2.3.2",
     "moment": "^2.18.1",
     "simple-log-manager": "*"
   }
