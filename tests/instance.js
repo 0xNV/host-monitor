@@ -228,12 +228,44 @@ describe("Instance", () => {
             })
         });
 
-        it("should return down date if host off", () => {
+        it("should return down date if host become off", () => {
+            app.use("*", (req, res) => {
+                res.sendStatus(200)
+            });
+
             instance.runDefaultJob();
 
             return new Promise((resolve) => {
                 setTimeout(() => {
-                    assert.equal(typeof instance.getDownDate(), "string");
+                    app.use("*", (req, res) => {
+                        res.sendStatus(404)
+                    });
+
+                    setTimeout(() => {
+                        assert.equal(typeof instance.getUpDateFormatted(), "string");
+                        resolve();
+                    }, 500);
+                }, 400);
+            })
+        });
+
+        it("should return last up date if host never was on", () => {
+            instance.runDefaultJob();
+
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    assert.equal(instance.getUpDateFormatted(), "Never");
+                    resolve();
+                }, 400);
+            })
+        });
+
+        it("should return last down date if host never was on", () => {
+            instance.runDefaultJob();
+
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    assert.equal(instance.getDownDateFormatted(), "Never");
                     resolve();
                 }, 400);
             })
@@ -248,7 +280,7 @@ describe("Instance", () => {
 
             return new Promise((resolve) => {
                 setTimeout(() => {
-                    assert.equal(instance.getDownDate(), undefined);
+                    assert.equal(instance.getDownDateFormatted(), undefined);
                     resolve();
                 }, 400);
             })
