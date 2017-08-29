@@ -8,11 +8,10 @@ const moment = require("moment");
 const config = require('./monitor').config();
 
 const Job = require("./Job");
-
 const logger = (() => {
     const manager = require('simple-log-manager');
 
-    if (process.env.LOG && Boolean(process.env.LOG) === false) {
+    if (process.env.LOG && process.env.LOG === 'false') {
         return manager.createDummyLogger("instance");
 
     }
@@ -35,13 +34,14 @@ const checker = function () {
         if (reachable) {
             if (!wasUp && !firstCheck) {
                 this.lastStatus = true;
-                this.downFrom = null;
+                this.downFromDate = null;
                 this.onUp.call(this);
                 this.runDefaultJob();
             }
+            this.wasUpDate = moment();
         } else {
             if (wasUp) {
-                this.downFrom = moment();
+                this.downFromDate = moment();
             }
             if (firstCheck || wasUp) {
                 this.onDown.call(this);
@@ -93,7 +93,8 @@ class Instance {
         this.alias = alias ? alias : null;
 
         this.lastStatus = null;
-        this.downFrom = null;
+        this.downFromDate = null;
+        this.wasUpDate = null;
 
         this.job = new Job();
     }
@@ -120,12 +121,19 @@ class Instance {
         return this.lastStatus === false;
     }
 
-    getDownDate () {
+    getUpDateFormatted () {
+        if (this.wasUpDate === null) {
+            return "Never";
+        }
+        return this.wasUpDate.format(config.timeFormat);
+    }
+
+    getDownDateFormatted () {
         if (this.isDown()) {
-            if (this.downFrom === null) {
+            if (this.downFromDate === null) {
                 return "Never";
             }
-            return this.downFrom.format(config.timeFormat);
+            return this.downFromDate.format(config.timeFormat);
         }
     }
 
@@ -162,7 +170,7 @@ class Instance {
             return this.isDown() ? "DOWN" : "UP";
         }
 
-        return this.isDown() ? `DOWN | Was up - ${this.getDownDate()}` : "UP";
+        return this.isDown() ? `DOWN | Was up - ${this.getDownDateFormatted()}` : "UP";
     }
 
     resumeJob () {
